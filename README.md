@@ -58,14 +58,17 @@
 - **Прерывания**: звонок, сворачивание, возврат из фона, поворот
 
 ## Структура
+
+```text
 src/main/java/com/mobile/
-├── config/ capabilities, адрес сервера Appium
-├── screens/ Screen Object — по классу на экран
-└── data/ генерация тестовых данных
+├── config/     capabilities, адрес сервера Appium
+├── screens/    Screen Object — по классу на экран
+└── data/       генерация тестовых данных
 
 src/test/java/com/mobile/tests/
-├── BaseTest поднятие драйвера, listener Allure
-└── *Tests сценарии
+├── BaseTest    поднятие драйвера, listener Allure
+└── *Tests      сценарии
+```
 
 
 ## Требования к окружению
