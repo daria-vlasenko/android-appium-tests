@@ -10,9 +10,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 public class SettingsScreen {
 
     private static final By ANY_LABEL = AppiumBy.className("android.widget.TextView");
+    private static final By SEARCH_ENTRY = AppiumBy.id("com.android.settings:id/search_action_bar");
+    private static final By SEARCH_INPUT = AppiumBy.className("android.widget.EditText");
 
     private final AndroidDriver driver;
     private final WebDriverWait wait;
@@ -70,7 +74,7 @@ public class SettingsScreen {
 
     @Step("Свернуть приложение на {seconds} секунд и вернуть")
     public SettingsScreen sendToBackgroundAndReturn(int seconds) {
-        driver.runAppInBackground(java.time.Duration.ofSeconds(seconds));
+        driver.runAppInBackground(Duration.ofSeconds(seconds));
         return this;
     }
 
@@ -80,5 +84,39 @@ public class SettingsScreen {
                 AppiumBy.androidUIAutomator(
                         "new UiSelector().textContains(\"" + text + "\")")));
         return this;
+    }
+
+    @Step("Открыть поиск по настройкам")
+    public SettingsScreen openSearch() {
+        wait.until(ExpectedConditions.elementToBeClickable(SEARCH_ENTRY)).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(SEARCH_INPUT));
+        return this;
+    }
+
+    @Step("Ввести в поиск текст {query}")
+    public SettingsScreen typeInSearch(String query) {
+        WebElement input = wait.until(
+                ExpectedConditions.presenceOfElementLocated(SEARCH_INPUT));
+        input.clear();
+        input.sendKeys(query);
+        return this;
+    }
+
+    @Step("Получить введённый в поиск текст")
+    public String searchInputText() {
+        return driver.findElement(SEARCH_INPUT).getText();
+    }
+
+    @Step("Скрыть системную клавиатуру")
+    public SettingsScreen hideKeyboard() {
+        if (driver.isKeyboardShown()) {
+            driver.hideKeyboard();
+        }
+        return this;
+    }
+
+    @Step("Проверить, что клавиатура показана")
+    public boolean isKeyboardShown() {
+        return driver.isKeyboardShown();
     }
 }

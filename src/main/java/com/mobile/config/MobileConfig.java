@@ -18,7 +18,7 @@ public final class MobileConfig {
     public static final String APP_ACTIVITY =
             System.getProperty("app.activity", ".Settings");
 
-    public static final Duration TIMEOUT = Duration.ofSeconds(10);
+    public static final Duration TIMEOUT = Duration.ofSeconds(30);
     public static final Duration NEW_COMMAND_TIMEOUT = Duration.ofSeconds(120);
 
     private MobileConfig() {

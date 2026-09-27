@@ -17,6 +17,7 @@ import org.openqa.selenium.ScreenOrientation;
 class MobileSpecificTests extends BaseMobileTest {
 
     private static final String SECTION = "System";
+    private static final String SEARCH_QUERY = "battery";
 
     @Test
     @Story("Поворот экрана")
@@ -36,6 +37,28 @@ class MobileSpecificTests extends BaseMobileTest {
                 "Экран не вернулся в книжную ориентацию");
         Assertions.assertEquals(MobileConfig.APP_PACKAGE, screen.currentPackage(),
                 "После обратного поворота на переднем плане другое приложение");
+    }
+
+    @Test
+    @Story("Поворот экрана")
+    @Severity(SeverityLevel.BLOCKER)
+    @DisplayName("Открытый раздел сохраняется при повороте экрана")
+    void keepsOpenedSectionOnRotation() {
+        SettingsScreen screen = new SettingsScreen(driver).shouldBeOpened();
+
+        screen.openSection(SECTION);
+        screen.shouldShowText(SECTION);
+        String afterOpen = screen.currentActivity();
+
+        screen.rotateTo(ScreenOrientation.LANDSCAPE);
+        screen.shouldShowText(SECTION);
+        Assertions.assertEquals(afterOpen, screen.currentActivity(),
+                "После поворота в альбом сменился экран");
+
+        screen.rotateTo(ScreenOrientation.PORTRAIT);
+        screen.shouldShowText(SECTION);
+        Assertions.assertEquals(afterOpen, screen.currentActivity(),
+                "После обратного поворота сменился экран");
     }
 
     @Test
@@ -80,5 +103,23 @@ class MobileSpecificTests extends BaseMobileTest {
 
         Assertions.assertTrue(screen.scrollTo(SECTION).isDisplayed(),
                 "Элемент не найден после прокрутки списка");
+    }
+
+    @Test
+    @Story("Ввод текста")
+    @Severity(SeverityLevel.CRITICAL)
+    @DisplayName("Поиск принимает введённый текст и показывает результаты")
+    void searchAcceptsTextInput() {
+        SettingsScreen screen = new SettingsScreen(driver).shouldBeOpened();
+
+        screen.openSearch()
+                .typeInSearch(SEARCH_QUERY);
+
+        Assertions.assertTrue(screen.searchInputText().toLowerCase().contains(SEARCH_QUERY),
+                "Поле поиска не приняло введённый текст");
+
+        screen.hideKeyboard();
+        Assertions.assertFalse(screen.isKeyboardShown(),
+                "Клавиатура осталась на экране после скрытия");
     }
 }
