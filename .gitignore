@@ -16,3 +16,7 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 Claude outputs/ 
+.idea/ 
+*.iml 
+allure-results/ 
+allure-report/ 
